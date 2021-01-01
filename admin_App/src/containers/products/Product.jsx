@@ -1,9 +1,9 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import Layout from "../../components/Layout";
 import { Col, Container, Row, Button, Table } from "react-bootstrap";
 import Input from "../../components/Input";
 import { useDispatch, useSelector } from "react-redux";
-import { addProduct, getInitialData } from "../../actions";
+import { addProduct } from "../../actions";
 import NewModal from "../../components/NewModal";
 import "./product.css";
 import { productImageBaseUrl } from "../../urlConfig";
@@ -52,7 +52,7 @@ function Product() {
       form.append("productPicture", pic);
     }
     dispatch(addProduct(form));
-    dispatch(getInitialData());
+    // dispatch(getInitialData());
     setCategoryName("");
     setDescription("");
     setName("");

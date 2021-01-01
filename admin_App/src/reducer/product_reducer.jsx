@@ -7,48 +7,10 @@ const initState = {
   error: null,
 };
 
-// const updatedCategory = (parentId, categories, createdCategory) => {
-//   let newlyUpdatedCategory = [];
-
-//   for (let category of categories) {
-//     if (category._id === parentId) {
-//       newlyUpdatedCategory.push({
-//         ...category,
-//         children:
-//           category.children && category.children.length > 0
-//             ? updatedCategory(
-//                 parentId,
-//                 [
-//                   ...category.children,
-//                   {
-//                     _id: createdCategory._id,
-//                     name: createdCategory.name,
-//                     slug: createdCategory.slug,
-//                     parentId: createdCategory.parentId,
-//                     categoryImage: createdCategory.categoryImage,
-//                     children: createdCategory.children,
-//                   },
-//                 ],
-//                 createdCategory
-//               )
-//             : [],
-//       });
-//     } else {
-//       newlyUpdatedCategory.push({
-//         ...category,
-//         children:
-//           category.children && category.children.length > 0
-//             ? updatedCategory(parentId, category.children, createdCategory)
-//             : [],
-//       });
-//     }
-//   }
-//   return newlyUpdatedCategory;
-// };
 const newlyRenderedProductList = (products, createdProduct) => {
   let updatedProducts = [];
 
-  updatedProducts.push(...products, createdProduct);
+  updatedProducts.push(...products, ...createdProduct);
   return updatedProducts;
 };
 
@@ -80,11 +42,6 @@ const productReducer = (state = initState, action) => {
       };
       break;
     case productConstants.CREATE_PRODUCT_SUCCESS:
-      //   const _updatedCategory = updatedCategory(
-      //     action.payload.createdCategory.parentId,
-      //     state.categories,
-      //     action.payload.createdCategory
-      //   );
       const updatedProductList = newlyRenderedProductList(
         state.products,
         action.payload.product
@@ -92,7 +49,6 @@ const productReducer = (state = initState, action) => {
       state = {
         ...state,
         newlyCreatedProduct: action.payload.product,
-        // categories: _updatedCategory,
         loading: false,
         products: updatedProductList,
       };

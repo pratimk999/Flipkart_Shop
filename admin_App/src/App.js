@@ -9,7 +9,7 @@ import { isUserLoggedIn } from "./actions/";
 import Product from "./containers/products/Product";
 import Order from "./containers/orders/Order";
 import Category from "./containers/category/Category";
-import { getAllCategories, getInitialData } from "./actions";
+import { getInitialData } from "./actions";
 
 function App() {
   const auth = useSelector((state) => state.auth);

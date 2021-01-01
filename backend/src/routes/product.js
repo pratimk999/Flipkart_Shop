@@ -2,7 +2,7 @@ const express = require("express");
 const router = express.Router();
 const slugify = require("slugify");
 const multer = require("multer");
-const product = require("../models/product");
+const Product = require("../models/product");
 const path = require("path");
 const shortid = require("shortid");
 const storage = multer.diskStorage({
@@ -25,7 +25,7 @@ router.post("/product/create", upload.array("productPicture"), (req, res) => {
     });
   }
 
-  const newProduct = new product({
+  const newProduct = new Product({
     name,
     description,
     quantity,
@@ -35,11 +35,14 @@ router.post("/product/create", upload.array("productPicture"), (req, res) => {
     productPictures,
   });
 
-  newProduct.save((err, createdProduct) => {
+  newProduct.save(async (err, createdProduct) => {
     if (err) {
       return console.log(err);
     }
-    res.json({ product: createdProduct });
+    const products = await Product.find({ _id: createdProduct._id })
+      .populate("category")
+      .exec();
+    res.json({ product: products });
   });
 });
 
