@@ -88,4 +88,55 @@ router.get("/category", (req, res) => {
   });
 });
 
+router.post(
+  "/category/update",
+  upload.array("categoryImage"),
+  async (req, res) => {
+    const { _id, name, parentId, type } = req.body;
+    const updatedCategoriesArray = [];
+    if (name instanceof Array) {
+      for (let i = 0; i < name.length; i++) {
+        if (type[i] === "undefined") {
+          type[i] = "productList";
+        }
+        const _updatedCategory = {
+          name: name[i],
+          type: type[i],
+          slug: slugify(name[i]),
+        };
+        if (parentId[i] !== "") {
+          _updatedCategory.parentId = parentId[i];
+        }
+
+        const updatedCategory = await Category.findOneAndUpdate(
+          { _id: _id[i] },
+          _updatedCategory,
+          { new: true }
+        );
+
+        updatedCategoriesArray.push(updatedCategory);
+      }
+      return res
+        .status(200)
+        .json({ updatedCategories: updatedCategoriesArray });
+    } else {
+      const _updatedCategory = {
+        name: name,
+        slug: slugify(name),
+        type: type,
+      };
+      if (parentId !== "") {
+        _updatedCategory.parentId = parentId;
+      }
+
+      const updatedCategory = await Category.findOneAndUpdate(
+        { _id: _id },
+        _updatedCategory,
+        { new: true }
+      );
+      return res.status(200).json({ updatedCategories: updatedCategory });
+    }
+  }
+);
+
 module.exports = router;

@@ -156,6 +156,7 @@ function Product() {
         </Row>
         <Row>
           <Col md={12}>
+            <label className="key">Description</label>
             <p className="value">{productModalItem.description}</p>
           </Col>
         </Row>
@@ -228,7 +229,13 @@ function Product() {
             );
           })}
         </select>
-        <Input type="file" name={productPicture} onChange={handleFileChange} />
+
+        <Input
+          type="file"
+          name={productPicture}
+          onChange={handleFileChange}
+          style={{ marginTop: "15px" }}
+        />
         <hr />
         {productPicture.length > 0
           ? productPicture.map((pic, index) => {

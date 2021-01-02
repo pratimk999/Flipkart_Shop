@@ -3,6 +3,7 @@ const router = express.Router();
 const slugify = require("slugify");
 const multer = require("multer");
 const Product = require("../models/product");
+const Category = require("../models/category");
 const path = require("path");
 const shortid = require("shortid");
 const storage = multer.diskStorage({
@@ -44,6 +45,46 @@ router.post("/product/create", upload.array("productPicture"), (req, res) => {
       .exec();
     res.json({ product: products });
   });
+});
+
+//!NOTE FETCH PRODUCTS AND FETCH ACCORDING TO PRICE
+
+router.get("/products/:slug", (req, res) => {
+  const { slug } = req.params;
+
+  Category.findOne({ slug: slug })
+    .select("_id")
+    .exec((err, foundCtegory) => {
+      if (err) {
+        return res.status(400).json("error ");
+      }
+      // res.status(200).json({ foundCtegory });
+      Product.find({ category: foundCtegory._id }).exec((err, products) => {
+        if (err) {
+          return res.status(400).json("error ");
+        }
+        res.status(200).json({
+          products: products,
+          productsByPrice: {
+            productsBelow5k: products.filter(
+              (product) => product.price <= 5000
+            ),
+            productsBelow15k: products.filter(
+              (product) => product.price <= 15000
+            ),
+            productsBelow25k: products.filter(
+              (product) => product.price <= 25000
+            ),
+            productsBelow35k: products.filter(
+              (product) => product.price <= 35000
+            ),
+            productsAbove35k: products.filter(
+              (product) => product.price > 35000
+            ),
+          },
+        });
+      });
+    });
 });
 
 module.exports = router;
