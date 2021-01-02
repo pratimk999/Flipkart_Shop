@@ -23,7 +23,7 @@
 
 .sidebar ul li a {
   display: block;
-  color: #333;
+  color: #007bff;
   padding: 5px 20px;
   box-sizing: border-box;
   margin: 5px 0 5px 15px;
@@ -31,7 +31,7 @@
   text-decoration: none;
 }
 .sidebar ul li a.active {
-  background: #333;
+  background: #007bff;
   color: #fff;
   width: 100%;
 }

@@ -1,0 +1,10 @@
+.actionButtonContainer {
+  display: flex;
+  align-items: center;
+}
+
+.actionButtonContainer > button {
+  margin: 0 10px;
+  border: 0;
+  font-size: 16px;
+}

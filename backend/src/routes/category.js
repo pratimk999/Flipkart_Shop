@@ -88,6 +88,8 @@ router.get("/category", (req, res) => {
   });
 });
 
+//!NOTE CATEGORY UPDATE ROUTE
+
 router.post(
   "/category/update",
   upload.array("categoryImage"),
@@ -138,5 +140,25 @@ router.post(
     }
   }
 );
+
+//!NOTE CATEGORY DELETE ROUTE
+
+router.post("/category/delete", async (req, res) => {
+  const { idsArray } = req.body.payload;
+  const deletedItemsArray = [];
+  if (idsArray) {
+    for (let i = 0; i < idsArray.length; i++) {
+      const deletedItem = await Category.findOneAndDelete({
+        _id: idsArray[i]._id,
+      });
+      deletedItemsArray.push(deletedItem);
+    }
+  }
+  if (deletedItemsArray.length == idsArray.length) {
+    res.status(200).json({ message: "Items deleted successfully" });
+  } else {
+    res.status(400).json({ message: "Something went wrong" });
+  }
+});
 
 module.exports = router;

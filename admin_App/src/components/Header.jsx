@@ -3,6 +3,9 @@ import { Navbar, Nav, Container } from "react-bootstrap";
 import { NavLink, Link } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { signout } from "../actions";
+import { IoLogoTux } from "react-icons/io";
+import { FaUserPlus, FaUserCheck } from "react-icons/fa";
+import { RiUserShared2Fill } from "react-icons/ri";
 function Header() {
   const auth = useSelector((state) => state.auth);
   const dispatch = useDispatch();
@@ -16,9 +19,10 @@ function Header() {
           <span
             className="nav-link"
             onClick={logOut}
-            style={{ cursor: "pointer" }}
+            style={{ cursor: "pointer", color: "white" }}
           >
-            SignOut
+            <RiUserShared2Fill style={{ fontSize: "20px" }} />
+            <span style={{ marginLeft: "3px" }}>SignOut</span>
           </span>
         </li>
       </Nav>
@@ -29,13 +33,15 @@ function Header() {
     return (
       <Nav>
         <li className="nav-item">
-          <NavLink to="/signin" className="nav-link">
-            SignIn
+          <NavLink to="/signin" className="nav-link" style={{ color: "white" }}>
+            <FaUserCheck style={{ fontSize: "20px" }} />
+            <span style={{ marginLeft: "3px" }}>SignIn</span>
           </NavLink>
         </li>
         <li className="nav-item">
-          <NavLink to="/signup" className="nav-link">
-            SignUp
+          <NavLink to="/signup" className="nav-link" style={{ color: "white" }}>
+            <FaUserPlus style={{ fontSize: "20px" }} />
+            <span style={{ marginLeft: "3px" }}>SignUp</span>
           </NavLink>
         </li>
       </Nav>
@@ -46,13 +52,14 @@ function Header() {
       collapseOnSelect
       fixed="top"
       expand="lg"
-      bg="dark"
-      variant="dark"
-      style={{ zIndex: "1" }}
+      bg="primary"
+      variant="primary"
+      style={{ zIndex: "1", color: "white" }}
     >
       <Container>
-        <Link className="navbar-brand" to="/">
-          Admin Dashboard
+        <Link className="navbar-brand" to="/" style={{ color: "white" }}>
+          <IoLogoTux style={{ fontSize: "30px" }} />
+          <span style={{ marginLeft: "3px" }}>Admin Dashboard</span>
         </Link>
         <Navbar.Toggle aria-controls="responsive-navbar-nav" />
         <Navbar.Collapse id="responsive-navbar-nav">
