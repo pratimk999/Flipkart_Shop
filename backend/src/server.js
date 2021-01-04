@@ -14,8 +14,10 @@ const User = require("./models/user");
 const userRoutes = require("./routes/user");
 const categoryRoutes = require("./routes/category");
 const productRoutes = require("./routes/product");
+const pageRoutes = require("./routes/adminRoutes/page");
 const cartRoutes = require("./routes/cart");
 const initialDataRoutes = require("./routes/adminRoutes/initialData");
+const adminRoutes = require("./routes/adminRoutes/admin");
 
 app.use(
   require("express-session")({
@@ -24,7 +26,6 @@ app.use(
     saveUninitialized: false,
     cookie: {
       httpOnly: true,
-      // secure: true,
       expires: Date.now() + 1000 * 60 * 60 * 24 * 7,
       maxAge: 1000 * 60 * 60 * 24 * 7,
     },
@@ -67,15 +68,17 @@ app.use(categoryRoutes);
 app.use(productRoutes);
 app.use(cartRoutes);
 app.use(initialDataRoutes);
+app.use(pageRoutes);
+app.use(adminRoutes);
 
-app.get("/", (req, res) => {
-  console.log(req.user);
+// app.get("/", (req, res) => {
+//   console.log(req.user);
 
-  if (req.isAuthenticated()) {
-    return res.send("You unlocked this");
-  }
-  res.send("You are not authenticated");
-});
+//   if (req.isAuthenticated()) {
+//     return res.send("You unlocked this");
+//   }
+//   res.send("You are not authenticated");
+// });
 
 app.listen(process.env.PORT || 8000, () => {
   console.log(`Server is running at ${process.env.PORT}`);

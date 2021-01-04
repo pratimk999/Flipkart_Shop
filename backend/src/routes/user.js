@@ -75,34 +75,3 @@ router.get("/logout", (req, res) => {
 });
 
 module.exports = router;
-
-//NOTE demo code
-// router.post("/register",function(req,res){
-// 	User.register(new User({
-// 		username:req.body.username,
-// 		firstname:req.body.firstname,
-// 		lastname:req.body.lastname,
-// 		avatar:req.body.avatar,
-// 		email:req.body.email
-// 	}),req.body.password,function(err,user){
-// 		if(err){
-// 			req.flash("error",err.message);
-// 			return res.redirect("/register");
-// 		}else{
-// 			passport.authenticate("local")(req,res,function(){
-// 				req.flash("sucess","Welcome to YelpCamp,nice to meet you " + user.username);
-// 				res.redirect("/campgrounds");
-// 			});
-// 		}
-// 	});
-// });
-
-// router.post("/login",passport.authenticate("local",{
-// 	successRedirect:"/campgrounds",
-// 	failureRedirect:"/login",
-// 	failureFlash:true,
-// 	successFlash:"Welcome back "
-
-// 	}),function(req,res){
-
-// });

@@ -1,12 +1,7 @@
 import React, { useState } from "react";
 import Layout from "../../components/Layout";
 import { useDispatch, useSelector } from "react-redux";
-import {
-  addCategory,
-  getAllCategories,
-  updateCategories,
-  deleteCategories,
-} from "../../actions";
+import { addCategory, updateCategories, deleteCategories } from "../../actions";
 import { Col, Container, Row } from "react-bootstrap";
 import Input from "../../components/Input";
 import NewModal from "../../components/NewModal";
@@ -27,7 +22,7 @@ import {
   IoIosSync,
   IoMdAdd,
 } from "react-icons/io";
-import "../../styling/category.css";
+import "./category.css";
 
 function Category() {
   const category = useSelector((state) => state.category);
@@ -46,6 +41,12 @@ function Category() {
 
   const handleClose = () => {
     const form = new FormData();
+
+    if (categoryName === "") {
+      alert("Category Name can't be empty");
+      setShow(false);
+      return;
+    }
 
     form.append("name", categoryName);
     form.append("categoryImage", categoryImage);
@@ -84,6 +85,7 @@ function Category() {
         value: category._id,
         name: category.name,
         parentId: category.parentId,
+        type: category.type,
       });
       if (category.children.length) {
         createCategoryList(category.children, options);
@@ -101,7 +103,7 @@ function Category() {
     updateAndDeleteCategoryReusableFunc();
     if (checked.length || expanded.length) {
       setModalButtonVisibility(true);
-    } else {
+    } else if (checked.length === 0 && expanded.length === 0) {
       setModalButtonVisibility(false);
     }
     setUpdateCategoryModal(true);
@@ -183,11 +185,7 @@ function Category() {
       });
     }
 
-    dispatch(updateCategories(form)).then((res) => {
-      if (res) {
-        dispatch(getAllCategories());
-      }
-    });
+    dispatch(updateCategories(form));
 
     setUpdateCategoryModal(false);
   };
@@ -200,11 +198,6 @@ function Category() {
         handleClose={handleClose}
         show={show}
         buttonLabel="Add"
-        style={{
-          backgroundColor: "#007bff",
-          color: "white",
-          padding: "5px 15px",
-        }}
         modalTitle="Add New Category"
       >
         <Input
@@ -249,11 +242,6 @@ function Category() {
         size="lg"
         visibility={modalButtonVisibility}
         buttonLabel="Update"
-        style={{
-          backgroundColor: "#007bff",
-          color: "white",
-          padding: "5px 15px",
-        }}
       >
         <h5>Expanded</h5>
         {expandedArray.length ? (
@@ -301,6 +289,7 @@ function Category() {
                 <Col>
                   <select
                     className="form-control"
+                    value={item.type}
                     onChange={(e) =>
                       handleCategoryUpdate(
                         "type",
@@ -368,6 +357,7 @@ function Category() {
                 <Col>
                   <select
                     className="form-control"
+                    value={item.type}
                     onChange={(e) =>
                       handleCategoryUpdate(
                         "type",
@@ -416,11 +406,6 @@ function Category() {
         show={deleteCategoryModal}
         display="false"
         modalTitle="Are you sure!"
-        style={{
-          backgroundColor: "#007bff",
-          color: "white",
-          padding: "5px 15px",
-        }}
         visibility={modalButtonVisibility}
         buttons={[
           {
@@ -472,11 +457,7 @@ function Category() {
     }));
 
     if (deletedCheckedArray.length > 0) {
-      dispatch(deleteCategories(deletedCheckedArray)).then((res) => {
-        if (res) {
-          dispatch(getAllCategories());
-        }
-      });
+      dispatch(deleteCategories(deletedCheckedArray));
     }
 
     setDeleteCategoryModal(false);

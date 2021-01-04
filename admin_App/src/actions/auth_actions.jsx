@@ -1,10 +1,10 @@
 import { authConstants } from "./actionConstants";
 import axios from "../helpers/axios";
-export const login = (user) => {
+const login = (user) => {
   return async (dispatch) => {
     dispatch({ type: authConstants.LOGIN_REQUEST });
 
-    const response = await axios.post(`/signin`, {
+    const response = await axios.post(`/admin/signin`, {
       ...user,
     });
     if (response.status === 200) {
@@ -50,10 +50,10 @@ export const isUserLoggedIn = () => {
   };
 };
 
-export const signout = () => {
+const signout = () => {
   return async (dispatch) => {
     dispatch({ type: authConstants.LOGOUT_REQUEST });
-    const res = await axios(`/logout`);
+    const res = await axios(`/admin/logout`);
 
     if (res.status === 200) {
       window.localStorage.clear();
@@ -73,3 +73,23 @@ export const signout = () => {
     }
   };
 };
+
+//!NOTE FOR AUTHENTICATE USER
+
+// export const isAuthenticated = (user) => {
+//   return async (dispatch) => {
+//     const response = await axios.get(`/admin/authenticate`, {
+//       ...user,
+//     });
+//     if (
+//       response.status === 200 &&
+//       response.data.message === "user is authenticated"
+//     ) {
+//       login(user);
+//     } else {
+//       signout();
+//     }
+//   };
+// };
+
+export { signout, login };

@@ -18,6 +18,7 @@ const updatedCategory = (parentId, categories, createdCategory) => {
         name: createdCategory.name,
         slug: createdCategory.slug,
         parentId: createdCategory.parentId,
+        type: createdCategory.type,
         categoryImage: createdCategory.categoryImage,
         children: [],
       },
@@ -38,6 +39,7 @@ const updatedCategory = (parentId, categories, createdCategory) => {
                   name: createdCategory.name,
                   slug: createdCategory.slug,
                   parentId: createdCategory.parentId,
+                  type: createdCategory.type,
                   categoryImage: createdCategory.categoryImage,
                   children: createdCategory.children,
                 },
@@ -91,7 +93,6 @@ const categoryReducer = (state = initState, action) => {
         state.categories,
         action.payload.createdCategory
       );
-      // console.log("update -", _updatedCategory);
       state = {
         ...state,
         newlyCreatedCategory: action.payload.createdCategory,
@@ -102,6 +103,43 @@ const categoryReducer = (state = initState, action) => {
     case categoryConstants.CREATE_CATEGORY_FAILURE:
       state = {
         ...initState,
+        error: action.payload.error,
+      };
+      break;
+
+    case categoryConstants.UPDATE_CATEGORY_REQUEST:
+      state = {
+        ...state,
+        loading: true,
+      };
+      break;
+    case categoryConstants.UPDATE_CATEGORY_SUCCESS:
+      state = {
+        ...state,
+        loading: false,
+      };
+      break;
+    case categoryConstants.UPDATE_CATEGORY_FAILURE:
+      state = {
+        ...state,
+        error: action.payload.error,
+      };
+      break;
+    case categoryConstants.DELETE_CATEGORY_REQUEST:
+      state = {
+        ...state,
+        loading: true,
+      };
+      break;
+    case categoryConstants.DELETE_CATEGORY_SUCCESS:
+      state = {
+        ...state,
+        loading: false,
+      };
+      break;
+    case categoryConstants.DELETE_CATEGORY_FAILURE:
+      state = {
+        ...state,
         error: action.payload.error,
       };
       break;

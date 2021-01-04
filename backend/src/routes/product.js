@@ -18,7 +18,7 @@ const storage = multer.diskStorage({
 const upload = multer({ storage: storage });
 
 router.post("/product/create", upload.array("productPicture"), (req, res) => {
-  const { name, description, quantity, price, category } = req.body;
+  const { name, description, quantity, price, category, createdBy } = req.body;
   let productPictures = [];
   if (req.files.length > 0) {
     productPictures = req.files.map((file) => {
@@ -33,6 +33,7 @@ router.post("/product/create", upload.array("productPicture"), (req, res) => {
     price,
     slug: slugify(name),
     category,
+    createdBy,
     productPictures,
   });
 

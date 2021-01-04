@@ -4,7 +4,7 @@ export const signup = (user) => {
   return async (dispatch) => {
     dispatch({ type: signUpConstants.SIGNUP_REQUEST });
 
-    const response = await axios.post(`/signup`, {
+    const response = await axios.post(`/admin/signup`, {
       ...user,
     });
     if (response.status === 200) {

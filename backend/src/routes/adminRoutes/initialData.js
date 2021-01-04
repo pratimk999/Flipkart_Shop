@@ -1,4 +1,5 @@
 const express = require("express");
+const { isUserAuthenticated } = require("../../middlewares");
 const router = express.Router();
 const Category = require("../../models/category");
 const Product = require("../../models/product");
@@ -23,6 +24,7 @@ function getCategories(categories, parentId = null) {
       name: categoryItem.name,
       slug: categoryItem.slug,
       parentId: categoryItem.parentId,
+      type: categoryItem.type,
       children: getCategories(categories, categoryItem._id),
     });
   }
@@ -30,6 +32,9 @@ function getCategories(categories, parentId = null) {
   return allCategoriesList;
 }
 
+//!NOTE USE MIDDLEWARE
+
+// isUserAuthenticated
 router.post("/initialData", async (req, res) => {
   const categories = await Category.find({}).exec();
   const products = await Product.find({}).populate("category").exec();

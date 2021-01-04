@@ -18,6 +18,9 @@ export default function Layout(props) {
                   </NavLink>
                 </li>
                 <li>
+                  <NavLink to={`/page`}>Page</NavLink>
+                </li>
+                <li>
                   <NavLink to={`/categories`}>Category</NavLink>
                 </li>
                 <li>

@@ -23,10 +23,16 @@ router.post("/category/create", upload.single("categoryImage"), (req, res) => {
     if (foundCategory) {
       return res.send("Category already exists");
     }
+
     const categoryObj = {
       name: req.body.name,
       slug: slugify(req.body.name),
     };
+    if (req.body.type === "undefined") {
+      categoryObj.type = "productList";
+    } else {
+      categoryObj.type = req.body.type;
+    }
     if (req.file) {
       categoryObj.categoryImage =
         process.env.IMAGE_API + "/public/" + req.file.filename;
@@ -67,6 +73,7 @@ function getCategories(categories, parentId = null) {
       _id: categoryItem._id,
       name: categoryItem.name,
       slug: categoryItem.slug,
+      type: categoryItem.type,
       parentId: categoryItem.parentId,
       children: getCategories(categories, categoryItem._id),
     });
@@ -81,10 +88,8 @@ router.get("/category", (req, res) => {
     if (err) {
       return console.log(err);
     }
-
     const allCategories = getCategories(categories);
-
-    res.json({ Categories: allCategories });
+    res.status(200).json({ Categories: allCategories });
   });
 });
 
@@ -125,8 +130,12 @@ router.post(
       const _updatedCategory = {
         name: name,
         slug: slugify(name),
-        type: type,
       };
+      if (type === "undefined") {
+        _updatedCategory.type = "productList";
+      } else {
+        _updatedCategory.type = type;
+      }
       if (parentId !== "") {
         _updatedCategory.parentId = parentId;
       }

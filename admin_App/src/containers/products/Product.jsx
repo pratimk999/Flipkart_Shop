@@ -11,12 +11,9 @@ import { productImageBaseUrl } from "../../urlConfig";
 function Product() {
   const category = useSelector((state) => state.category);
   const product = useSelector((state) => state.product);
+  const auth = useSelector((state) => state.auth);
 
   const dispatch = useDispatch();
-
-  // useEffect(() => {
-  //   dispatch(getInitialData());
-  // }, [dispatch]);
 
   const [productModal, setProductModal] = useState(false);
   const [productModalItem, setProductModalItem] = useState({});
@@ -42,31 +39,53 @@ function Product() {
   const handleClose = () => {
     const form = new FormData();
 
+    if (name === "") {
+      alert("Product Name can't be empty");
+      setShow(false);
+      return;
+    }
+    if (description === "") {
+      alert(
+        "Product Description can't be empty , if you don't have description write NA"
+      );
+      setShow(false);
+      return;
+    }
+    if (price === "") {
+      alert("Product Price can't be empty");
+      setShow(false);
+      return;
+    }
+    if (quantity === "") {
+      alert("Product Price can't be empty");
+      setShow(false);
+      return;
+    }
+    if (categoryName === "") {
+      alert("Category Name can't be empty");
+      setShow(false);
+      return;
+    }
+
     form.append("name", name);
     form.append("price", price);
     form.append("quantity", quantity);
     form.append("description", description);
     form.append("category", categoryName);
+    if (auth.authenticate) {
+      form.append("createdBy", auth.user._id);
+    }
 
     for (let pic of productPicture) {
       form.append("productPicture", pic);
     }
     dispatch(addProduct(form));
-    // dispatch(getInitialData());
     setCategoryName("");
     setDescription("");
     setName("");
     setPrice("");
     setQuantity("");
     setProductPicture([]);
-    const data = {
-      name,
-      price,
-      description,
-      productPicture,
-    };
-
-    console.log(data);
 
     setShow(false);
   };
@@ -74,7 +93,11 @@ function Product() {
   //!NOTE RENDER CATEGORY NAMES IN SELECT TAG
   const createCategoryList = (categories, options = []) => {
     for (let category of categories) {
-      options.push({ value: category._id, name: category.name });
+      options.push({
+        value: category._id,
+        name: category.name,
+        type: category.type,
+      });
       if (category.children.length) {
         createCategoryList(category.children, options);
       }
@@ -190,6 +213,15 @@ function Product() {
         handleClose={handleClose}
         show={show}
         modalTitle="Add New Product"
+        buttonLabel="Add"
+        style={{
+          backgroundColor: "#007bff",
+          color: "white",
+          padding: "5px 15px",
+        }}
+        footerStyle={{
+          padding: "5px 10px",
+        }}
       >
         <Input
           type="text"
@@ -259,7 +291,9 @@ function Product() {
           </Col>
         </Row>
         <Row>
-          <Col>{renderProducts()}</Col>
+          <Col md={12} sm={6}>
+            {renderProducts()}
+          </Col>
         </Row>
         {renderAddProductModal()}
         {renderProductDetailsModal()}
