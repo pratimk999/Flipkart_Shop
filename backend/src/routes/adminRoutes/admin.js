@@ -1,41 +1,58 @@
 const express = require("express");
 const router = express.Router();
 const User = require("../../models/user");
-const passport = require("passport");
+const jwt = require("jsonwebtoken");
 const {
   isReqValidated,
   validateSignup,
-  // validateSignin,
+  validateSignin,
 } = require("../../validator/validate");
-
-// //!NOTE CHECK IF A USER IS AUTHENTICATED OR NOT IN FIRST LOAD OF THE PAGE
-// router.get("/admin/authenticate", (req, res) => {
-//   if (req.isAuthenticated()) {
-//     res.status(200).json({ message: "user is authenticated" });
-//   } else {
-//     res.status(401).json({ message: "user is not authenticated" });
-//   }
-// });
+const { userMiddleWare } = require("../../middlewares");
+const { adminMiddleWare } = require("../../middlewares");
 
 //!NOTE SIGNIN ROUTE
 router.post(
   "/admin/signin",
-  // validateSignin,
-  // isReqValidated,
-  passport.authenticate("local"),
+  validateSignin,
+  isReqValidated,
+  // passport.authenticate("local"),
   (req, res) => {
-    console.log(req.isAuthenticated());
-    User.find({ username: req.body.username }, (err, user) => {
+    User.findOne({ username: req.body.username }, (err, user) => {
       if (err) {
         console.log(err);
         return;
       }
-      console.log(req.session);
-      const { _id, firstName, lastName, email, role, contactNumber } = req.user;
-      res.json({
-        User: { _id, firstName, lastName, email, role, contactNumber },
-      });
-      console.log(req.user);
+      if (user) {
+        if (user.authenticate(req.body.password)) {
+          const token = jwt.sign(
+            { _id: user._id, role: user.role },
+            process.env.JWT_SECRET,
+            { expiresIn: "3d" }
+          );
+          console.log(token);
+          const {
+            _id,
+            firstName,
+            lastName,
+            email,
+            role,
+            contactNumber,
+            fullName,
+          } = user;
+          res.json({
+            token: token,
+            User: {
+              _id,
+              firstName,
+              lastName,
+              email,
+              role,
+              contactNumber,
+              fullName,
+            },
+          });
+        }
+      }
     });
   }
 );
@@ -65,8 +82,9 @@ router.post(
             email,
             username,
             contactNumber,
+            password,
           });
-          const newUser = await User.register(_user, password);
+          const newUser = await new User(_user);
 
           newUser.save((err, response) => {
             if (err) {
@@ -85,8 +103,10 @@ router.post(
 //!NOTE LOGOUT ROUTE
 
 router.get("/admin/logout", (req, res) => {
-  req.logOut();
-  res.json({ message: "See you later" });
+  res.clearCookie("token");
+  res.status(200).json({
+    message: "Signout successfully...See you later!",
+  });
 });
 
 module.exports = router;

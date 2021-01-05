@@ -11,7 +11,7 @@ import { productImageBaseUrl } from "../../urlConfig";
 function Product() {
   const category = useSelector((state) => state.category);
   const product = useSelector((state) => state.product);
-  const auth = useSelector((state) => state.auth);
+  // const auth = useSelector((state) => state.auth);
 
   const dispatch = useDispatch();
 
@@ -72,9 +72,6 @@ function Product() {
     form.append("quantity", quantity);
     form.append("description", description);
     form.append("category", categoryName);
-    if (auth.authenticate) {
-      form.append("createdBy", auth.user._id);
-    }
 
     for (let pic of productPicture) {
       form.append("productPicture", pic);

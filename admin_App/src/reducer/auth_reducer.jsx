@@ -8,6 +8,7 @@ const initState = {
     username: "",
     conatctNumber: "",
   },
+  token: "",
   loading: false,
   message: "",
   authenticate: false,
@@ -27,6 +28,7 @@ const authReducer = (state = initState, action) => {
       state = {
         ...state,
         user: action.payload.User,
+        token: action.payload.token,
         authenticate: true,
         authenticating: false,
         logOut: false,

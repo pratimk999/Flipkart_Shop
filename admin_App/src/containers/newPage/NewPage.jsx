@@ -22,8 +22,10 @@ function NewPage() {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    setAllCategories(linearCategoriesList(category.categories));
-  }, [category]);
+    if (auth.authenticate) {
+      setAllCategories(linearCategoriesList(category.categories));
+    }
+  }, [category, auth.authenticate]);
 
   const onCategoryChange = (e) => {
     const category = allCategories.find(
@@ -53,9 +55,7 @@ function NewPage() {
     form.append("description", pageDesc);
     form.append("type", type);
     form.append("category", categoryId);
-    if (auth.authenticate) {
-      form.append("createdBy", auth.user._id);
-    }
+
     banners.forEach((banner, index) => {
       form.append("banners", banner);
     });

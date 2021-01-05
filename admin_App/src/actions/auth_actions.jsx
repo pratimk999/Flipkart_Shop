@@ -8,13 +8,15 @@ const login = (user) => {
       ...user,
     });
     if (response.status === 200) {
-      const { User } = response.data;
-      User.isLoggedIn = true;
-      localStorage.setItem("user", JSON.stringify(User));
+      const { User, token } = response.data;
+      // User.isLoggedIn = true;
+      window.localStorage.setItem("token", JSON.stringify(token));
+      window.localStorage.setItem("user", JSON.stringify(User));
       dispatch({
         type: authConstants.LOGIN_SUCCESS,
         payload: {
           User,
+          token,
         },
       });
     } else {
@@ -31,12 +33,14 @@ const login = (user) => {
 // !NOTE ANOTHER ISLOGGEDIN FUNCTION WILL BE HERE WHICH WILL DISPATCH AN ACTION AND SET THE USER DATA IF AN USER IS PRESENT IN LOCALSTORAGE
 export const isUserLoggedIn = () => {
   return async (dispatch) => {
-    const User = JSON.parse(window.localStorage.getItem("user"));
-    if (User != null && User.isLoggedIn === true) {
+    const token = JSON.parse(window.localStorage.getItem("token"));
+    if (token) {
+      const User = JSON.parse(window.localStorage.getItem("user"));
       dispatch({
         type: authConstants.LOGIN_SUCCESS,
         payload: {
           User,
+          token,
         },
       });
     } else {
@@ -73,23 +77,5 @@ const signout = () => {
     }
   };
 };
-
-//!NOTE FOR AUTHENTICATE USER
-
-// export const isAuthenticated = (user) => {
-//   return async (dispatch) => {
-//     const response = await axios.get(`/admin/authenticate`, {
-//       ...user,
-//     });
-//     if (
-//       response.status === 200 &&
-//       response.data.message === "user is authenticated"
-//     ) {
-//       login(user);
-//     } else {
-//       signout();
-//     }
-//   };
-// };
 
 export { signout, login };

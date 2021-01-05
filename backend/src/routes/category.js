@@ -5,6 +5,7 @@ const slugify = require("slugify");
 const path = require("path");
 const shortid = require("shortid");
 const multer = require("multer");
+const { requireSignedIn, adminMiddleWare } = require("../middlewares");
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
     cb(null, path.join(path.dirname(__dirname), "uploads"));
@@ -18,39 +19,45 @@ const upload = multer({ storage: storage });
 
 //!NOTE CATEGORY CREATE ROUTE
 
-router.post("/category/create", upload.single("categoryImage"), (req, res) => {
-  Category.findOne({ name: req.body.name }, (err, foundCategory) => {
-    if (foundCategory) {
-      return res.send("Category already exists");
-    }
-
-    const categoryObj = {
-      name: req.body.name,
-      slug: slugify(req.body.name),
-    };
-    if (req.body.type === "undefined") {
-      categoryObj.type = "productList";
-    } else {
-      categoryObj.type = req.body.type;
-    }
-    if (req.file) {
-      categoryObj.categoryImage =
-        process.env.IMAGE_API + "/public/" + req.file.filename;
-    }
-
-    if (req.body.parentId) {
-      categoryObj.parentId = req.body.parentId;
-    }
-
-    const newCategory = new Category(categoryObj);
-    newCategory.save((err, newlyCreatedCategory) => {
-      if (err) {
-        return res.send(err);
+router.post(
+  "/category/create",
+  upload.single("categoryImage"),
+  requireSignedIn,
+  adminMiddleWare,
+  (req, res) => {
+    Category.findOne({ name: req.body.name }, (err, foundCategory) => {
+      if (foundCategory) {
+        return res.send("Category already exists");
       }
-      res.json({ createdCategory: newlyCreatedCategory });
+
+      const categoryObj = {
+        name: req.body.name,
+        slug: slugify(req.body.name),
+      };
+      if (req.body.type === "undefined") {
+        categoryObj.type = "productList";
+      } else {
+        categoryObj.type = req.body.type;
+      }
+      if (req.file) {
+        categoryObj.categoryImage =
+          process.env.IMAGE_API + "/public/" + req.file.filename;
+      }
+
+      if (req.body.parentId) {
+        categoryObj.parentId = req.body.parentId;
+      }
+
+      const newCategory = new Category(categoryObj);
+      newCategory.save((err, newlyCreatedCategory) => {
+        if (err) {
+          return res.send(err);
+        }
+        res.json({ createdCategory: newlyCreatedCategory });
+      });
     });
-  });
-});
+  }
+);
 
 //!NOTE RECURSIVE FUNCTION TO FETCH CHILD CATEGORIES
 
@@ -98,6 +105,8 @@ router.get("/category", (req, res) => {
 router.post(
   "/category/update",
   upload.array("categoryImage"),
+  requireSignedIn,
+  adminMiddleWare,
   async (req, res) => {
     const { _id, name, parentId, type } = req.body;
     const updatedCategoriesArray = [];
@@ -152,22 +161,27 @@ router.post(
 
 //!NOTE CATEGORY DELETE ROUTE
 
-router.post("/category/delete", async (req, res) => {
-  const { idsArray } = req.body.payload;
-  const deletedItemsArray = [];
-  if (idsArray) {
-    for (let i = 0; i < idsArray.length; i++) {
-      const deletedItem = await Category.findOneAndDelete({
-        _id: idsArray[i]._id,
-      });
-      deletedItemsArray.push(deletedItem);
+router.post(
+  "/category/delete",
+  requireSignedIn,
+  adminMiddleWare,
+  async (req, res) => {
+    const { idsArray } = req.body.payload;
+    const deletedItemsArray = [];
+    if (idsArray) {
+      for (let i = 0; i < idsArray.length; i++) {
+        const deletedItem = await Category.findOneAndDelete({
+          _id: idsArray[i]._id,
+        });
+        deletedItemsArray.push(deletedItem);
+      }
+    }
+    if (deletedItemsArray.length == idsArray.length) {
+      res.status(200).json({ message: "Items deleted successfully" });
+    } else {
+      res.status(400).json({ message: "Something went wrong" });
     }
   }
-  if (deletedItemsArray.length == idsArray.length) {
-    res.status(200).json({ message: "Items deleted successfully" });
-  } else {
-    res.status(400).json({ message: "Something went wrong" });
-  }
-});
+);
 
 module.exports = router;

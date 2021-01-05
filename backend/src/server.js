@@ -2,13 +2,11 @@ require("dotenv").config();
 const express = require("express");
 const app = express();
 const mongoose = require("mongoose");
-const bodyParser = require("body-parser");
 const cors = require("cors");
-const passport = require("passport");
-const LocalStrategy = require("passport-local");
-const passportLocalMongoose = require("passport-local-mongoose");
+// const passport = require("passport");
+// const LocalStrategy = require("passport-local");
+// const passportLocalMongoose = require("passport-local-mongoose");
 const path = require("path");
-const User = require("./models/user");
 
 //!NOTE routes import
 const userRoutes = require("./routes/user");
@@ -32,14 +30,6 @@ app.use(
   })
 );
 
-// !NOTE Passport js setup
-app.use(passport.initialize());
-app.use(passport.session());
-
-passport.use(new LocalStrategy(User.authenticate()));
-passport.serializeUser(User.serializeUser());
-passport.deserializeUser(User.deserializeUser());
-
 //!NOTE Mongodb setup
 
 mongoose.connect(process.env.MONGODB_CONNECTION, {
@@ -58,7 +48,6 @@ mongoose.connection.on("error", () => {
 });
 app.use(cors());
 app.use(express.json());
-app.use(bodyParser.urlencoded({ extended: true }));
 app.use("/public/", express.static(path.join(__dirname, "uploads")));
 
 //!NOTE routes configuration
@@ -70,15 +59,6 @@ app.use(cartRoutes);
 app.use(initialDataRoutes);
 app.use(pageRoutes);
 app.use(adminRoutes);
-
-// app.get("/", (req, res) => {
-//   console.log(req.user);
-
-//   if (req.isAuthenticated()) {
-//     return res.send("You unlocked this");
-//   }
-//   res.send("You are not authenticated");
-// });
 
 app.listen(process.env.PORT || 8000, () => {
   console.log(`Server is running at ${process.env.PORT}`);

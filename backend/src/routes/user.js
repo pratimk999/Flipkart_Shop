@@ -1,31 +1,58 @@
 const express = require("express");
 const router = express.Router();
 const User = require("../models/user");
-const passport = require("passport");
+const jwt = require("jsonwebtoken");
 const {
   isReqValidated,
   validateSignup,
-  // validateSignin,
+  validateSignin,
 } = require("../validator/validate");
+const { userMiddleWare } = require("../middlewares");
 
 //!NOTE SIGNIN ROUTE
 router.post(
   "/signin",
-  // validateSignin,
-  // isReqValidated,
-  passport.authenticate("local"),
+  validateSignin,
+  isReqValidated,
+  userMiddleWare,
+  // passport.authenticate("local"),
   (req, res) => {
-    User.find({ username: req.body.username }, (err, user) => {
+    User.findOne({ username: req.body.username }, (err, user) => {
       if (err) {
         console.log(err);
         return;
       }
-      console.log(req.session);
-      const { _id, firstName, lastName, email, role, contactNumber } = req.user;
-      res.json({
-        User: { _id, firstName, lastName, email, role, contactNumber },
-      });
-      console.log(req.user);
+      if (user) {
+        if (user.authenticate(req.body.password)) {
+          const token = jwt.sign(
+            { _id: user._id, role: user.role },
+            process.env.JWT_SECRET,
+            { expiresIn: "3d" }
+          );
+          console.log(token);
+          const {
+            _id,
+            firstName,
+            lastName,
+            email,
+            role,
+            contactNumber,
+            fullName,
+          } = user;
+          res.json({
+            token: token,
+            User: {
+              _id,
+              firstName,
+              lastName,
+              email,
+              role,
+              contactNumber,
+              fullName,
+            },
+          });
+        }
+      }
     });
   }
 );
@@ -51,8 +78,9 @@ router.post("/signup", validateSignup, isReqValidated, async (req, res) => {
           email,
           username,
           contactNumber,
+          password,
         });
-        const newUser = await User.register(_user, password);
+        const newUser = await new User(_user);
 
         newUser.save((err, response) => {
           if (err) {
