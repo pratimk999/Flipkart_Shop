@@ -23,34 +23,31 @@ router.post(
   adminMiddleWare,
   (req, res) => {
     // console.log(req.files);
-    if (req.files) {
+    // console.log("INSIDE PAGE");
+    if (req.files && req.files.length > 0) {
       const { banners, products } = req.files;
-      if (banners.length > 0) {
-        req.body.banners = banners.map((banner, index) => {
-          return {
-            img: `${process.env.IMAGE_API}/public/${banner.filename}`,
-            navigateTo: `/bannerClicked?categoryId=${req.body.category}&type=${req.body.type}`,
-          };
-        });
-      } else {
-        req.body.banners = {
-          img: `${process.env.IMAGE_API}/public/${banner.filename}`,
-          navigateTo: `/bannerClicked?categoryId=${req.body.category}&type=${req.body.type}`,
-        };
+      // console.log(banners);
+      // console.log(products);
+      if (banners !== "undefined") {
+        if (banners.length) {
+          req.body.banners = banners.map((banner, index) => {
+            return {
+              img: `${process.env.IMAGE_API}/public/${banner.filename}`,
+              navigateTo: `/bannerClicked?categoryId=${req.body.category}&type=${req.body.type}`,
+            };
+          });
+        }
       }
 
-      if (products.length > 0) {
-        req.body.products = products.map((product, index) => {
-          return {
-            img: `${process.env.IMAGE_API}/public/${product.filename}`,
-            navigateTo: `/bannerClicked?categoryId=${req.body.category}&type=${req.body.type}`,
-          };
-        });
-      } else {
-        req.body.products = {
-          img: `${process.env.IMAGE_API}/public/${product.filename}`,
-          navigateTo: `/productClicked?categoryId=${req.body.category}&type=${req.body.type}`,
-        };
+      if (products !== "undefined") {
+        if (products.length) {
+          req.body.products = products.map((product, index) => {
+            return {
+              img: `${process.env.IMAGE_API}/public/${product.filename}`,
+              navigateTo: `/productClicked?categoryId=${req.body.category}&type=${req.body.type}`,
+            };
+          });
+        }
       }
     }
     req.body.createdBy = req.user._id;

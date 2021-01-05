@@ -27,9 +27,8 @@ router.post(
           const token = jwt.sign(
             { _id: user._id, role: user.role },
             process.env.JWT_SECRET,
-            { expiresIn: "3d" }
+            { expiresIn: "1d" }
           );
-          console.log(token);
           const {
             _id,
             firstName,
@@ -90,7 +89,7 @@ router.post(
             if (err) {
               return console.log(err);
             }
-            res.json({ message: "user created" });
+            response.json({ message: "user created" });
           });
         } catch (error) {
           console.log(error);
@@ -103,6 +102,7 @@ router.post(
 //!NOTE LOGOUT ROUTE
 
 router.get("/admin/logout", (req, res) => {
+  console.log("INSIDE LOGOUT");
   res.clearCookie("token");
   res.status(200).json({
     message: "Signout successfully...See you later!",

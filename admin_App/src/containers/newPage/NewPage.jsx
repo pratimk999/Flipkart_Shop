@@ -19,6 +19,7 @@ function NewPage() {
 
   const category = useSelector((state) => state.category);
   const auth = useSelector((state) => state.auth);
+  const newPage = useSelector((state) => state.newPage);
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -26,6 +27,12 @@ function NewPage() {
       setAllCategories(linearCategoriesList(category.categories));
     }
   }, [category, auth.authenticate]);
+
+  useEffect(() => {
+    if (newPage.loading) {
+      setHideCreatePageModal(false);
+    }
+  }, [newPage]);
 
   const onCategoryChange = (e) => {
     const category = allCategories.find(
@@ -38,9 +45,13 @@ function NewPage() {
   //!NOTE HANDLECLOSE OF BUTTON
   const handleClose = () => {
     const form = new FormData();
-
+    if (categoryId === "") {
+      alert("Category can't be empty");
+      setHideCreatePageModal(false);
+      return;
+    }
     if (title === "") {
-      alert("Title can't be empty");
+      alert("Page Name can't be empty");
       setHideCreatePageModal(false);
       return;
     }
@@ -64,6 +75,11 @@ function NewPage() {
     });
     setHideCreatePageModal(false);
     dispatch(createPage(form));
+    setTitle("");
+    setPageDesc("");
+    setCategoryId("");
+    setBanners([]);
+    setProductImg([]);
     // console.log({ title, pageDesc, type, banners, productImg });
   };
 
@@ -178,7 +194,7 @@ function NewPage() {
 
   return (
     <Layout sidebar>
-      <button onClick={showCreatePageModal}>click</button>
+      <button onClick={showCreatePageModal}>Create New Page</button>
 
       {renderCreatePageModal()}
     </Layout>

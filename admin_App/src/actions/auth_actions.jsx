@@ -1,6 +1,6 @@
 import { authConstants } from "./actionConstants";
 import axios from "../helpers/axios";
-const login = (user) => {
+export const login = (user) => {
   return async (dispatch) => {
     dispatch({ type: authConstants.LOGIN_REQUEST });
 
@@ -54,7 +54,7 @@ export const isUserLoggedIn = () => {
   };
 };
 
-const signout = () => {
+export const signout = () => {
   return async (dispatch) => {
     dispatch({ type: authConstants.LOGOUT_REQUEST });
     const res = await axios(`/admin/logout`);
@@ -77,5 +77,3 @@ const signout = () => {
     }
   };
 };
-
-export { signout, login };

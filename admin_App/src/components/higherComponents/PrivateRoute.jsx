@@ -7,7 +7,7 @@ function PrivateRoute({ component: Component, ...rest }) {
       {...rest}
       component={(props) => {
         const token = JSON.parse(window.localStorage.getItem("token"));
-        if (token !== null) {
+        if (token) {
           return <Component {...props} />;
         } else {
           return <Redirect to={`/signin`} />;
