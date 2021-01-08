@@ -24,11 +24,11 @@ router.post(
   (req, res) => {
     // console.log(req.files);
     // console.log("INSIDE PAGE");
-    if (req.files && req.files.length > 0) {
+    if (req.files !== null || req.files !== "undefined") {
       const { banners, products } = req.files;
       // console.log(banners);
       // console.log(products);
-      if (banners !== "undefined") {
+      if (typeof banners !== "undefined") {
         if (banners.length) {
           req.body.banners = banners.map((banner, index) => {
             return {
@@ -39,7 +39,7 @@ router.post(
         }
       }
 
-      if (products !== "undefined") {
+      if (typeof products !== "undefined") {
         if (products.length) {
           req.body.products = products.map((product, index) => {
             return {
@@ -52,15 +52,54 @@ router.post(
     }
     req.body.createdBy = req.user._id;
 
-    const newPage = new Page(req.body);
-
-    newPage.save((err, result) => {
+    Page.findOne({ category: req.body.category }, (err, result) => {
       if (err) {
         return res.status(400).json({ message: "something went wrong" });
+      } else if (result) {
+        console.log(req.body);
+        Page.findOneAndUpdate(
+          { category: req.body.category },
+          req.body,
+          (e, updatedPage) => {
+            if (e) {
+              return res.status(400).json({ message: "something went wrong" });
+            }
+            if (updatedPage) {
+              return res.status(200).json({ newPage: updatedPage });
+            }
+          }
+        );
       } else {
-        res.status(200).json({ newPage: result });
+        const newPage = new Page(req.body);
+
+        newPage.save((err, newPage) => {
+          if (err) {
+            return res.status(400).json({ message: "something went wrong" });
+          } else {
+            return res.status(200).json({ newPage: newPage });
+          }
+        });
       }
     });
+  }
+);
+
+// !NOTE GET PAGE ROUTE
+
+router.get(
+  "/admin/page/:category/:type",
+  // requireSignedIn,
+  // adminMiddleWare,
+  (req, res) => {
+    const { category, type } = req.params;
+    if (type === "page") {
+      Page.findOne({ category: category }, (err, foundPage) => {
+        if (err) {
+          return res.status(400).json({ message: "something went wrong" });
+        }
+        res.status(200).json({ Page: foundPage });
+      });
+    }
   }
 );
 

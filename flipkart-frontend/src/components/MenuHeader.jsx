@@ -2,6 +2,7 @@ import React, { useEffect } from "react";
 import "../styling/menuHeader.css";
 import { useSelector, useDispatch } from "react-redux";
 import { getAllCategories } from "../actions";
+import { Link } from "react-router-dom";
 function MenuHeader() {
   const category = useSelector((state) => state.category);
   const dispatch = useDispatch();
@@ -14,7 +15,12 @@ function MenuHeader() {
       displayCategories.push(
         <li key={category.name}>
           {category.parentId ? (
-            <a href={category.slug}>{category.name}</a>
+            <Link
+              style={{ textDecoration: "none" }}
+              to={`${category.slug}?categoryId=${category._id}&type=${category.type}`}
+            >
+              {category.name}
+            </Link>
           ) : (
             <span>{category.name}</span>
           )}

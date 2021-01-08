@@ -5,35 +5,36 @@ const jwt = require("jsonwebtoken");
 const {
   isReqValidated,
   validateSignup,
-  validateSignin,
+  // validateSignin,
+  validateSigninUser,
 } = require("../validator/validate");
 const { userMiddleWare } = require("../middlewares");
 
 //!NOTE SIGNIN ROUTE
 router.post(
   "/signin",
-  validateSignin,
+  validateSigninUser,
   isReqValidated,
-  userMiddleWare,
   // passport.authenticate("local"),
   (req, res) => {
-    User.findOne({ username: req.body.username }, (err, user) => {
+    User.findOne({ email: req.body.email }, (err, user) => {
       if (err) {
         console.log(err);
         return;
       }
       if (user) {
-        if (user.authenticate(req.body.password)) {
+        if (user.authenticate(req.body.password) && user.role === "user") {
           const token = jwt.sign(
             { _id: user._id, role: user.role },
             process.env.JWT_SECRET,
-            { expiresIn: "3d" }
+            { expiresIn: "1d" }
           );
-          console.log(token);
+          // console.log(token);
           const {
             _id,
             firstName,
             lastName,
+            username,
             email,
             role,
             contactNumber,
@@ -45,12 +46,15 @@ router.post(
               _id,
               firstName,
               lastName,
+              username,
               email,
               role,
               contactNumber,
               fullName,
             },
           });
+        } else {
+          return res.status(400).json({ message: "something went wrong" });
         }
       }
     });
@@ -98,8 +102,10 @@ router.post("/signup", validateSignup, isReqValidated, async (req, res) => {
 //!NOTE LOGOUT ROUTE
 
 router.get("/logout", (req, res) => {
-  req.logOut();
-  res.json({ message: "See you later" });
+  res.clearCookie("token");
+  res.status(200).json({
+    message: "Signout successfully...See you later!",
+  });
 });
 
 module.exports = router;

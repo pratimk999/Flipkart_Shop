@@ -1,5 +1,4 @@
 const mongoose = require("mongoose");
-// const passportLocalMongoose = require("passport-local-mongoose");
 const bcrypt = require("bcrypt");
 
 const userSchema = new mongoose.Schema(
@@ -19,7 +18,6 @@ const userSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
-// userSchema.plugin(passportLocalMongoose);
 userSchema.virtual("password").set(function (password) {
   this.hash_password = bcrypt.hashSync(password, 10);
 });

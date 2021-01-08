@@ -20,6 +20,13 @@ exports.validateSignin = [
     .withMessage("password with minimum length 6 is required"),
 ];
 
+exports.validateSigninUser = [
+  check("email").isEmail().withMessage("Valid email is required"),
+  check("password")
+    .isLength({ min: 6 })
+    .withMessage("password with minimum length 6 is required"),
+];
+
 exports.isReqValidated = (req, res, next) => {
   const errors = validationResult(req);
   if (errors.array().length > 0) {

@@ -23,7 +23,7 @@ router.post(
         return;
       }
       if (user) {
-        if (user.authenticate(req.body.password)) {
+        if (user.authenticate(req.body.password) && user.role === "admin") {
           const token = jwt.sign(
             { _id: user._id, role: user.role },
             process.env.JWT_SECRET,
@@ -35,6 +35,7 @@ router.post(
             lastName,
             email,
             role,
+            username,
             contactNumber,
             fullName,
           } = user;
@@ -45,11 +46,14 @@ router.post(
               firstName,
               lastName,
               email,
+              username,
               role,
               contactNumber,
               fullName,
             },
           });
+        } else {
+          return res.status(400).json({ message: "something went wrong" });
         }
       }
     });
@@ -82,6 +86,7 @@ router.post(
             username,
             contactNumber,
             password,
+            role: "admin",
           });
           const newUser = await new User(_user);
 
@@ -102,7 +107,6 @@ router.post(
 //!NOTE LOGOUT ROUTE
 
 router.get("/admin/logout", (req, res) => {
-  console.log("INSIDE LOGOUT");
   res.clearCookie("token");
   res.status(200).json({
     message: "Signout successfully...See you later!",

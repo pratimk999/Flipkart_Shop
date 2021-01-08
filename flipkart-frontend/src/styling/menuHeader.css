@@ -41,6 +41,7 @@ a {
   display: none;
   border: 1px solid #cecece;
   background-color: white;
+  z-index: 1;
 }
 
 .menuHeader > ul > li:hover ul {
