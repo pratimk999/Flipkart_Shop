@@ -51,6 +51,12 @@ function Header(props) {
       return;
     }
 
+    setEmail("");
+    setPassword("");
+    setFirstName("");
+    setLastName("");
+    setMobileNumber("");
+
     dispatch(_signup(user));
   };
 
@@ -64,6 +70,8 @@ function Header(props) {
         return;
       }
       dispatch(login({ email, password }));
+      setEmail("");
+      setPassword("");
       setLoginModal(false);
     }
   };
@@ -209,7 +217,7 @@ function Header(props) {
                   <MaterialInput
                     type="text"
                     label="Mobile Number"
-                    value={email}
+                    value={mobileNumber}
                     style={{ marginBottom: "20px" }}
                     onChange={(e) => setMobileNumber(e.target.value)}
                   />
