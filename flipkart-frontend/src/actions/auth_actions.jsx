@@ -4,10 +4,10 @@ import axios from "../helpers/axios";
 export const signup = (user) => {
   return async (dispatch) => {
     let res;
+    dispatch({ type: authConstants.SIGNUP_REQUEST });
+    res = await axios.post(`/signup`, user);
     try {
-      dispatch({ type: authConstants.SIGNUP_REQUEST });
-      res = await axios.post(`/signup`, user);
-      if (res.status === 201) {
+      if (res.status === 200) {
         dispatch({ type: authConstants.SIGNUP_SUCCESS });
         const { user } = res.data;
         // localStorage.setItem("token", token);

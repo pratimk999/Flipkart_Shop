@@ -1,8 +1,8 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import flipkartLogo from "../images/logo/flipkart.PNG";
 import goldenStar from "../images/logo/golden-star.PNG";
 import "../styling/header.css";
-import { IoIosArrowDown, IoIosCart, IoIosSearch } from "react-icons/io";
+import { IoIosArrowDown, IoIosSearch } from "react-icons/io";
 import {
   Modal,
   MaterialInput,
@@ -24,7 +24,7 @@ function Header(props) {
   const [loginModal, setLoginModal] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [error, setError] = useState("");
+  // const [error, setError] = useState("");
   const [mobileNumber, setMobileNumber] = useState("");
 
   //NOTE state cart value
@@ -51,13 +51,13 @@ function Header(props) {
       return;
     }
 
+    dispatch(_signup(user));
     setEmail("");
     setPassword("");
     setFirstName("");
     setLastName("");
     setMobileNumber("");
-
-    dispatch(_signup(user));
+    setSignup(false);
   };
 
   const userLogin = () => {
@@ -81,8 +81,6 @@ function Header(props) {
     setEmail("");
     setPassword("");
   };
-
-  useEffect(() => {}, [auth.authenticate, dispatch]);
 
   //!NOTE FOR LOGGEDIN USER
 

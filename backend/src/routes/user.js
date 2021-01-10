@@ -4,9 +4,9 @@ const User = require("../models/user");
 const jwt = require("jsonwebtoken");
 const {
   isReqValidated,
-  validateSignup,
   // validateSignin,
   validateSigninUser,
+  validateSignupUser,
 } = require("../validator/validate");
 const { userMiddleWare } = require("../middlewares");
 
@@ -62,7 +62,7 @@ router.post(
 );
 
 //!NOTE SIGNUP ROUTE
-router.post("/signup", validateSignup, isReqValidated, async (req, res) => {
+router.post("/signup", validateSignupUser, isReqValidated, async (req, res) => {
   User.findOne({ email: req.body.email }, async (err, user) => {
     if (err) console.log(err);
     if (user) {
@@ -74,22 +74,23 @@ router.post("/signup", validateSignup, isReqValidated, async (req, res) => {
         const email = req.body.email;
         const username = `@${firstName}`;
         const password = req.body.password;
-        const contactNumber = req.body.contactNumber;
+        const contactNumber = req.body.mobileNumber;
 
-        const _user = new User({
+        const _user = {
           firstName,
           lastName,
           email,
           username,
           contactNumber,
           password,
-        });
+        };
         const newUser = await new User(_user);
 
         newUser.save((err, response) => {
           if (err) {
             return res.json({ error: err });
           }
+
           res.json({ user: newUser });
         });
       } catch (error) {
