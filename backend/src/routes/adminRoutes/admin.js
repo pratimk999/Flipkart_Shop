@@ -94,7 +94,7 @@ router.post(
             if (err) {
               return console.log(err);
             }
-            response.json({ message: "user created" });
+            res.status(200).json({ message: "user created" });
           });
         } catch (error) {
           console.log(error);

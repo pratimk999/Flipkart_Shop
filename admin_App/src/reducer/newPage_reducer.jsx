@@ -32,6 +32,7 @@ const newPageReducer = (state = initState, action) => {
     default:
       break;
   }
+  return state;
 };
 
 export default newPageReducer;

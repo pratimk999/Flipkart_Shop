@@ -3,9 +3,7 @@ const express = require("express");
 const app = express();
 const mongoose = require("mongoose");
 const cors = require("cors");
-// const passport = require("passport");
-// const LocalStrategy = require("passport-local");
-// const passportLocalMongoose = require("passport-local-mongoose");
+
 const path = require("path");
 
 //!NOTE routes import
@@ -15,6 +13,9 @@ const productRoutes = require("./routes/product");
 const pageRoutes = require("./routes/adminRoutes/page");
 const cartRoutes = require("./routes/cart");
 const initialDataRoutes = require("./routes/adminRoutes/initialData");
+const addressRoutes = require("./routes/address");
+const orderRoutes = require("./routes/order");
+const adminOrderRoutes = require("./routes/adminRoutes/orderRoutes");
 const adminRoutes = require("./routes/adminRoutes/admin");
 
 app.use(
@@ -58,6 +59,9 @@ app.use(productRoutes);
 app.use(cartRoutes);
 app.use(initialDataRoutes);
 app.use(pageRoutes);
+app.use(orderRoutes);
+app.use(addressRoutes);
+app.use(adminOrderRoutes);
 app.use(adminRoutes);
 
 app.listen(process.env.PORT || 8000, () => {

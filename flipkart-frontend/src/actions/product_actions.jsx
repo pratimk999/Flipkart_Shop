@@ -61,10 +61,12 @@ export const getProductPage = (payload) => {
 export const getProductDetailsById = (id) => {
   return async (dispatch) => {
     let res;
+    const productId = id;
+
+    res = await axios.get(`/product/${productId}`);
     try {
       dispatch({ type: productConstants.GET_PRODUCT_DETAILS_BY_ID_REQUEST });
-      const productId = id;
-      res = await axios.get(`/product/${productId}`);
+
       console.log(res);
       if (res.status === 200) {
         dispatch({

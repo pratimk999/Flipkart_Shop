@@ -184,7 +184,7 @@ const CheckoutPage = (props) => {
     if (confirmOrder && user.placedOrderId) {
       props.history.push(`/order_details/${user.placedOrderId}`);
     }
-  }, [user.placedOrderId]);
+  }, [confirmOrder, props.history, user.placedOrderId]);
 
   return (
     <Layout>

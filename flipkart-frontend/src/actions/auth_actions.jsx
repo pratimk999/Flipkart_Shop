@@ -9,13 +9,12 @@ export const signup = (user) => {
       res = await axios.post(`/signup`, user);
       if (res.status === 201) {
         dispatch({ type: authConstants.SIGNUP_SUCCESS });
-        const { token, user } = res.data;
-        localStorage.setItem("token", token);
-        localStorage.setItem("user", JSON.stringify(user));
+        const { user } = res.data;
+        // localStorage.setItem("token", token);
+        // localStorage.setItem("user", JSON.stringify(user));
         dispatch({
-          type: authConstants.LOGIN_SUCCESS,
+          type: authConstants.SIGNUP_SUCCESS,
           payload: {
-            token,
             user,
           },
         });

@@ -72,7 +72,7 @@ router.post("/signup", validateSignup, isReqValidated, async (req, res) => {
         const firstName = req.body.firstName;
         const lastName = req.body.lastName;
         const email = req.body.email;
-        const username = req.body.username;
+        const username = `@${firstName}`;
         const password = req.body.password;
         const contactNumber = req.body.contactNumber;
 
@@ -88,9 +88,9 @@ router.post("/signup", validateSignup, isReqValidated, async (req, res) => {
 
         newUser.save((err, response) => {
           if (err) {
-            return console.log(err);
+            return res.json({ error: err });
           }
-          res.json({ message: "user created" });
+          res.json({ user: newUser });
         });
       } catch (error) {
         console.log(error);

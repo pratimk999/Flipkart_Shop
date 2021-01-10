@@ -16,9 +16,9 @@ const OrderPage = (props) => {
 
   useEffect(() => {
     dispatch(getOrders());
-  }, []);
+  }, [dispatch]);
 
-  console.log(user);
+  // console.log(user);
 
   return (
     <Layout>
@@ -31,32 +31,33 @@ const OrderPage = (props) => {
           ]}
           breedIcon={<IoIosArrowForward />}
         />
-        {user.orders.map((order) => {
-          return order.items.map((item) => (
-            <MyCard style={{ display: "block", margin: "5px 0" }}>
-              <Link
-                to={`/order_details/${order._id}`}
-                className="orderItemContainer"
-              >
-                <div className="orderImgContainer">
-                  <img
-                    className="orderImg"
-                    src={item.productId.productPictures[0].img}
-                    alt=""
-                  />
-                </div>
-                <div className="orderRow">
-                  <div className="orderName">{item.productId.name}</div>
-                  <div className="orderPrice">
-                    <BiRupee />
-                    {item.payablePrice}
+        {user.orders &&
+          user.orders.map((order) => {
+            return order.items.map((item) => (
+              <MyCard style={{ display: "block", margin: "5px 0" }}>
+                <Link
+                  to={`/order_details/${order._id}`}
+                  className="orderItemContainer"
+                >
+                  <div className="orderImgContainer">
+                    <img
+                      className="orderImg"
+                      src={item.productId.productPictures[0].img}
+                      alt=""
+                    />
                   </div>
-                  <div>{order.paymentStatus}</div>
-                </div>
-              </Link>
-            </MyCard>
-          ));
-        })}
+                  <div className="orderRow">
+                    <div className="orderName">{item.productId.name}</div>
+                    <div className="orderPrice">
+                      <BiRupee />
+                      {item.payablePrice}
+                    </div>
+                    <div>{order.paymentStatus}</div>
+                  </div>
+                </Link>
+              </MyCard>
+            ));
+          })}
       </div>
     </Layout>
   );

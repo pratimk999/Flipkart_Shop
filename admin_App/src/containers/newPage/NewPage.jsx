@@ -194,7 +194,13 @@ function NewPage() {
 
   return (
     <Layout sidebar>
-      <button onClick={showCreatePageModal}>Create New Page</button>
+      <button
+        onClick={showCreatePageModal}
+        className="btn btn-success"
+        style={{ margin: "10px" }}
+      >
+        Create New Page
+      </button>
 
       {renderCreatePageModal()}
     </Layout>
